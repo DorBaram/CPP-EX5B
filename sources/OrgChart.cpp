@@ -1,7 +1,7 @@
 #include "OrgChart.hpp"
 
-namespace ariel {
-    OrgChart::OrgChart():nodeCount(0) {}
+namespace ariel{
+    OrgChart::OrgChart() : nodeCount(0) {}
     OrgChart::~OrgChart() {}
     //מקבלת קלט אחד ושמה אותו בשורש של העץ. אם כבר יש משהו בשורש, הוא מוחלף.
     OrgChart &OrgChart::add_root(const string &rootname){
@@ -13,25 +13,36 @@ namespace ariel {
     }
     //מקבלת שני קלטים. אדם (או מחלקה) שכבר קיימים במבנה הארגוני ואדם נוסף (או מחלקה נוספת) אשר מדווחים לאדם הראשון ונמצאים מתחתיו בהיררכיה הארגונית.
     OrgChart &OrgChart::add_sub(const string& top, const string& bot){
-        if (root.getName().empty() || nodeCount == 0){
+        if (root.getName().empty() || nodeCount <= 0){
             throw invalid_argument("no root found");
         }
-        for (auto i = begin(); i != end(); ++i){
-            if (*i == top){
-                i->addChild(bot);
-                nodeCount++;
-                return *this;
+        if (top.empty() || bot.empty() || top == " " || bot == " " || top == "\n" || bot == "\n"|| top == "\t" || bot == "\t"|| top == "\r" || bot == "\r"){
+            throw invalid_argument("top or bot must be a valid string");
+        }
+        if(recursive_add_sub(root,top,bot)){
+            return *this;
+        }
+        throw invalid_argument("didnt find top");
+    }
+    bool OrgChart::recursive_add_sub(Node &starting,const string &top,const string &bot){
+        if(starting.getName() == top){
+            starting.addChild(bot);
+            nodeCount++;
+            return true;
+        }
+        for (auto& i:starting.getChildrens()){
+            if (recursive_add_sub(i,top,bot)){
+                return true;
             }
         }
-        
-        throw invalid_argument("no top node found in chart");
+        return false;
     }
+    
     // output
     ostream& operator<<(ostream& out, const OrgChart& root){
         out << root.root;
         return out;
     }
-
     //מחזירות איטרטורים לצורך מעבר בסדר level order (אב - בן - בן - נכד).
     OrgChart::Iter OrgChart::begin_level_order(){
         check();
@@ -43,6 +54,7 @@ namespace ariel {
         check();
         return Iter(nullptr,0);
     }
+
     //מחזירות איטרטורים לצורך מעבר בסדר reverse level order (נכד - נכד - בן - בן - אב).
     OrgChart::Iter OrgChart::begin_reverse_order(){
         check();
@@ -52,11 +64,11 @@ namespace ariel {
         q.push(I.getN());
         while (!q.empty()){
             Node* tmp = q.front();
-            s.push(tmp);
+            s.push(q.front());
             q.pop();
-            size_t i = tmp->getChildrens().size();
-            for (; i > 0; i--){     //insert all the childerns into q
-                q.push(&tmp->getChildrens().at(i));
+            
+            for (int i = (int)tmp->getChildrens().size()-1; i > -1; i--){     //insert all the childerns into q
+                q.push(&tmp->getChildrens().at((size_t)i));
             }
         }
         I.setN(s.top());
@@ -178,4 +190,5 @@ namespace ariel {
         curr = vect.at(0);
         return *this;  
     }
+
 }

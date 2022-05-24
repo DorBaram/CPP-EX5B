@@ -2,11 +2,8 @@
 
 namespace ariel{
     Node::Node(){}  //def constructor
-    Node::Node(const string &n){   //constructor
-        name = n;
-    }
+    Node::Node(const string &n):name(n){}  //constructor
     Node::~Node(){} //destructor
-
     string& Node::getName(){//get name of the node
         return name;
     }      
@@ -22,7 +19,7 @@ namespace ariel{
     int Node::population(){//returns the amount of childrens in vector
         return childrens.size();
     }   
-    char Node::at(size_t i){//returns the name of the children at i
+    char Node::at(size_t i){//returns the char i in name of the children
         return name.at(i);
     }  
     ostream& operator<<(ostream& out, const Node& n){//for output
