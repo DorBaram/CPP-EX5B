@@ -1,16 +1,14 @@
 #include "OrgChart.hpp"
 
 namespace ariel {
-    OrgChart::OrgChart() {
-        nodeCount =0;
-    }
+    OrgChart::OrgChart():nodeCount(0) {}
     OrgChart::~OrgChart() {}
     //מקבלת קלט אחד ושמה אותו בשורש של העץ. אם כבר יש משהו בשורש, הוא מוחלף.
-    OrgChart &OrgChart::add_root(string rootname){
+    OrgChart &OrgChart::add_root(const string &rootname){
         if (nodeCount == 0){
             nodeCount++;
         }
-        this->root.setName(move(rootname));
+        this->root.setName(rootname);
         return *this;
     }
     //מקבלת שני קלטים. אדם (או מחלקה) שכבר קיימים במבנה הארגוני ואדם נוסף (או מחלקה נוספת) אשר מדווחים לאדם הראשון ונמצאים מתחתיו בהיררכיה הארגונית.
@@ -18,13 +16,14 @@ namespace ariel {
         if (root.getName().empty() || nodeCount == 0){
             throw invalid_argument("no root found");
         }
-        for (auto i = begin(); !(i == end()); ++i){
-            if (*i == top){             ///maybe change refernse to function
+        for (auto i = begin(); i != end(); ++i){
+            if (*i == top){
                 i->addChild(bot);
                 nodeCount++;
                 return *this;
             }
         }
+        
         throw invalid_argument("no top node found in chart");
     }
     // output
@@ -105,11 +104,11 @@ namespace ariel {
         curr = n;
     }
     //operators
-    bool OrgChart::Iter::operator==(const Iter& other){
+    bool OrgChart::Iter::operator==(const Iter& other)const{
         return (this->curr == other.curr);
     }
-    bool OrgChart::Iter::operator!=(const Iter& other){
-        return !(this->curr == other.curr);
+    bool OrgChart::Iter::operator!=(const Iter& other)const{
+        return (this->curr != other.curr);
     }
     string& OrgChart::Iter::operator*(){//returns the name of the current node
         return this->getN()->getName();

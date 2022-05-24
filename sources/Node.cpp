@@ -10,8 +10,8 @@ namespace ariel{
     string& Node::getName(){//get name of the node
         return name;
     }      
-    void Node::setName(string n){//set name of node
-        name = move(n);
+    void Node::setName(const string &n){//set name of node
+        name = n;
     }    
     vector<Node>& Node::getChildrens(){//get the vector of childrens of the node
         return childrens;

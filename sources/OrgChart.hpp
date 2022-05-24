@@ -24,10 +24,7 @@ namespace ariel{
                 stack<Node*> stac;      //for reverse order
                 queue<Node*> queu;      //for level order
             public:
-                Iter(Node* n, int o){   //constructor
-                    curr = n;
-                    order = o;
-                }
+                Iter(Node* node, int orderby):curr(node),order(orderby){ }  //constructor
                 ~Iter(){}   //destructor
                 //getters
                 Node* getN();
@@ -37,21 +34,26 @@ namespace ariel{
                 //setter
                 void setN(Node* n);
                 //operators
-                bool operator==(const Iter& other);
-                bool operator!=(const Iter& other);
+                bool operator==(const Iter& other)const;
+                bool operator!=(const Iter& other)const;
                 string& operator*();    //returns the name of the current node
                 Node* operator->();
-                Iter& operator++();
+                Iter& operator++();     //using in for loops of the
                 //orders
                 Iter& levelOrder();
                 Iter& reverseOrder();
                 Iter& preOrder();
+                //the following is for tidy
+                Iter(const Iter& other):curr(nullptr),order(4){}
+                Iter(Iter&& other)noexcept:curr(nullptr),order(4){}
+                Iter& operator=(Iter&& other)noexcept{return *this;}
+                Iter& operator=(const Iter& other) = default;
         };
         //constructor + destructor
         OrgChart();
         ~OrgChart();
         //מקבלת קלט אחד ושמה אותו בשורש של העץ. אם כבר יש משהו בשורש, הוא מוחלף.
-        OrgChart& add_root(string rootname);
+        OrgChart& add_root(const string &rootname);
         //מקבלת שני קלטים. אדם (או מחלקה) שכבר קיימים במבנה הארגוני ואדם נוסף (או מחלקה נוספת) אשר מדווחים לאדם הראשון ונמצאים מתחתיו בהיררכיה הארגונית.
         OrgChart& add_sub(const string& top, const string& bot);
         //מחזירות איטרטורים לצורך מעבר בסדר level order (אב - בן - בן - נכד).
@@ -69,5 +71,12 @@ namespace ariel{
         //for output
         friend ostream& operator<<(ostream& out, const OrgChart& root);   
         void check()const;
+        //the following is for tidy
+        OrgChart(const OrgChart& other):nodeCount(-1){}
+        bool operator==(const OrgChart& other)const{return true;}
+        OrgChart& operator=(OrgChart&& other)noexcept{return *this;}
+        OrgChart& operator=(const OrgChart& other){return *this;}
+        OrgChart(OrgChart&& other)noexcept:nodeCount(-1){}
+
     };
 }

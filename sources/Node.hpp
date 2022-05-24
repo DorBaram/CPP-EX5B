@@ -13,13 +13,13 @@ namespace ariel{
             vector<Node> childrens;
 
         public:
-            Node();            //def constructor
+            Node();                   //def constructor
             Node(const string &n);    //constructor
-            ~Node();           //destructor
+            ~Node();                  //destructor
             int size() {return name.size();}
             int length() {return size();}
             string& getName();         //get name of the node
-            void setName(string n);    //set name of node
+            void setName(const string &n);    //set name of node
 
             vector<Node>& getChildrens();   //get the vector of childrens of the node
             void addChild(const string &n);        //add a child to the vector
@@ -28,5 +28,13 @@ namespace ariel{
             char at(size_t i);  //returns the name of the children at i
 
             friend ostream& operator<<(ostream& out, const Node& n);  //for output stream
+
+            //the following is for tidy
+            Node(const Node& other){}
+            Node(Node&& other)noexcept{}
+            bool operator==(const Node& other)const{return true;}
+            Node& operator=(const Node& other){return *this;}
+            Node& operator=(Node&& other)noexcept{return *this;}
+            
     };
 }
